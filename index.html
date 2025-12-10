@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BI可视化工具 - 数据智能分析平台</title>
+    <link rel="stylesheet" href="styles/main.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- 侧边栏 -->
+        <aside class="sidebar">
+            <div class="logo">
+                <div class="logo-icon">BI</div>
+                <div class="logo-text">数据智能分析</div>
+            </div>
+            
+            <nav class="nav-menu">
+                <div class="nav-item">
+                    <a href="datasource.html" class="nav-link">
+                        <div class="nav-icon">🗄️</div>
+                        <div class="nav-text">数据源管理</div>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="metrics.html" class="nav-link">
+                        <div class="nav-icon">🎯</div>
+                        <div class="nav-text">指标定义</div>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="dimensions.html" class="nav-link">
+                        <div class="nav-icon">📏</div>
+                        <div class="nav-text">维度配置</div>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="datacards.html" class="nav-link">
+                        <div class="nav-icon">📊</div>
+                        <div class="nav-text">数据卡片</div>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="reports.html" class="nav-link">
+                        <div class="nav-icon">📋</div>
+                        <div class="nav-text">报表配置</div>
+                    </a>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- 主内容区域 -->
+        <main class="main-content">
+            <header class="header">
+                <div class="page-title">🏠 BI可视化工具</div>
+                <div class="header-actions">
+                    <button class="header-btn" onclick="showWelcomeGuide()">
+                        <span>📖</span>
+                        <span>使用指南</span>
+                    </button>
+                </div>
+            </header>
+
+            <div class="content">
+                <!-- 欢迎界面 -->
+                <div class="welcome-section">
+                    <div class="welcome-header">
+                        <h1>欢迎使用BI可视化工具</h1>
+                        <p>一站式数据分析和可视化平台，帮助您快速构建专业的商业智能报表</p>
+                    </div>
+
+                    <!-- 工作流程概览 -->
+                    <div class="workflow-overview">
+                        <h2>工作流程</h2>
+                        <div class="workflow-steps">
+                            <div class="workflow-step">
+                                <div class="step-number">1</div>
+                                <div class="step-content">
+                                    <h3>数据源管理</h3>
+                                    <p>连接和管理多种数据源，包括数据库、API接口和文件数据</p>
+                                    <a href="datasource.html" class="step-link">开始配置 →</a>
+                                </div>
+                            </div>
+                            <div class="workflow-step">
+                                <div class="step-number">2</div>
+                                <div class="step-content">
+                                    <h3>指标定义</h3>
+                                    <p>基于数据源定义业务指标，支持基础计算和自定义公式</p>
+                                    <a href="metrics.html" class="step-link">开始配置 →</a>
+                                </div>
+                            </div>
+                            <div class="workflow-step">
+                                <div class="step-number">3</div>
+                                <div class="step-content">
+                                    <h3>维度配置</h3>
+                                    <p>配置时间、业务、地理等维度，支持层级维度定义</p>
+                                    <a href="dimensions.html" class="step-link">开始配置 →</a>
+                                </div>
+                            </div>
+                            <div class="workflow-step">
+                                <div class="step-number">4</div>
+                                <div class="step-content">
+                                    <h3>数据卡片</h3>
+                                    <p>创建各种类型的可视化卡片，如KPI、图表、表格等</p>
+                                    <a href="datacards.html" class="step-link">开始配置 →</a>
+                                </div>
+                            </div>
+                            <div class="workflow-step">
+                                <div class="step-number">5</div>
+                                <div class="step-content">
+                                    <h3>报表配置</h3>
+                                    <p>组合数据卡片创建报表，支持筛选、布局和分享功能</p>
+                                    <a href="reports.html" class="step-link">开始配置 →</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 快速开始 -->
+                    <div class="quick-start">
+                        <h2>快速开始</h2>
+                        <div class="quick-actions">
+                            <div class="quick-action" onclick="location.href='datasource.html'">
+                                <div class="action-icon">🗄️</div>
+                                <div class="action-title">添加数据源</div>
+                                <div class="action-desc">连接您的第一个数据源</div>
+                            </div>
+                            <div class="quick-action" onclick="showTemplateGallery()">
+                                <div class="action-icon">📊</div>
+                                <div class="action-title">使用模板</div>
+                                <div class="action-desc">从模板快速创建报表</div>
+                            </div>
+                            <div class="quick-action" onclick="showDemoData()">
+                                <div class="action-icon">🎯</div>
+                                <div class="action-title">查看示例</div>
+                                <div class="action-desc">浏览演示数据和报表</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 最近使用的项目 -->
+                    <div class="recent-projects">
+                        <h2>最近项目</h2>
+                        <div id="recentProjectsList" class="projects-list">
+                            <!-- 最近项目将通过JavaScript动态生成 -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- 欢迎指南模态框 -->
+    <div class="modal" id="welcomeGuideModal">
+        <div class="modal-content" style="max-width: 800px;">
+            <div class="modal-header">
+                <h2>使用指南</h2>
+                <button class="modal-close" onclick="closeWelcomeGuide()">×</button>
+            </div>
+            <div class="guide-content">
+                <div class="guide-section">
+                    <h3>快速入门</h3>
+                    <ol>
+                        <li>在"数据源管理"页面添加您的数据源</li>
+                        <li>在"指标定义"页面创建业务指标</li>
+                        <li>在"维度配置"页面设置分析维度</li>
+                        <li>在"数据卡片"页面设计可视化组件</li>
+                        <li>在"报表配置"页面组合卡片创建报表</li>
+                    </ol>
+                </div>
+                
+                <div class="guide-section">
+                    <h3>功能特性</h3>
+                    <ul>
+                        <li>支持多种数据源：MySQL、PostgreSQL、API、文件等</li>
+                        <li>灵活的指标计算：基础计算和自定义公式</li>
+                        <li>丰富的维度类型：时间、业务、地理维度</li>
+                        <li>多种可视化卡片：KPI、图表、表格、地图</li>
+                        <li>可定制的报表布局和筛选条件</li>
+                    </ul>
+                </div>
+                
+                <div class="guide-section">
+                    <h3>最佳实践</h3>
+                    <ul>
+                        <li>为每个指标添加清晰的描述信息</li>
+                        <li>合理设置维度层级，便于钻取分析</li>
+                        <li>使用模板快速创建常用报表</li>
+                        <li>定期测试数据源连接状态</li>
+                        <li>合理设置报表刷新频率</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="form-actions">
+                <button class="btn btn-primary" onclick="closeWelcomeGuide()">开始使用</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/dataConfig.js"></script>
+    <script src="js/index.js"></script>
+</body>
+</html>

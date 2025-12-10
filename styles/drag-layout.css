@@ -1,0 +1,464 @@
+/* 拖拽布局样式 */
+
+/* 拖拽布局容器 */
+.drag-layout-container {
+    margin: 0;
+    padding: 0;
+    background: #fafafa;
+    border-radius: 8px;
+    border: 1px solid #e8e8e8;
+    overflow: hidden;
+}
+
+/* 拖拽网格 */
+.drag-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    padding: 20px;
+    min-height: 200px;
+    background: #f9f9f9;
+    transition: all 0.3s ease;
+}
+
+/* 可拖拽卡片 */
+.draggable-card {
+    background: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    padding: 15px;
+    cursor: move;
+    transition: all 0.3s ease;
+    position: relative;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    user-select: none;
+}
+
+.draggable-card:hover {
+    border-color: #1890ff;
+    box-shadow: 0 4px 8px rgba(24, 144, 255, 0.2);
+    transform: translateY(-2px);
+}
+
+.draggable-card.drag-over {
+    border: 2px dashed #1890ff;
+    background-color: #f0f8ff;
+    transform: scale(1.02);
+}
+
+.draggable-card.dragging {
+    opacity: 0.6;
+    transform: rotate(2deg);
+}
+
+/* 拖拽手柄 */
+.drag-handle {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    cursor: grab;
+    color: #999;
+    font-size: 12px;
+    padding: 2px 4px;
+    border-radius: 3px;
+    background: #f5f5f5;
+    user-select: none;
+}
+
+.drag-handle:hover {
+    color: #666;
+    background: #e8e8e8;
+}
+
+.drag-handle:active {
+    cursor: grabbing;
+}
+
+/* 卡片操作按钮 */
+.card-actions {
+    margin-top: 15px;
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+    opacity: 1;
+}
+
+.card-action-btn {
+    padding: 6px 12px;
+    border: 1px solid #d9d9d9;
+    border-radius: 4px;
+    background: white;
+    color: #666;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    white-space: nowrap;
+}
+
+.card-action-btn:hover {
+    background: #f5f5f5;
+    border-color: #1890ff;
+    color: #1890ff;
+}
+
+.card-action-btn:active {
+    background: #e6f7ff;
+}
+
+.card-action-btn.primary {
+    background: #1890ff;
+    border-color: #1890ff;
+    color: white;
+}
+
+.card-action-btn.primary:hover {
+    background: #40a9ff;
+    border-color: #40a9ff;
+}
+
+.card-action-btn.danger {
+    background: #ff4d4f;
+    border-color: #ff4d4f;
+    color: white;
+}
+
+.card-action-btn.danger:hover {
+    background: #ff7875;
+    border-color: #ff7875;
+}
+
+/* 不同大小的卡片样式 */
+.draggable-card[data-card-size="full"] {
+    grid-column: 1 / -1 !important;
+    background: linear-gradient(135deg, #f0f8ff, #e6f7ff);
+    border-color: #1890ff;
+}
+
+.draggable-card[data-card-size="half"] {
+    grid-column: span 2 !important;
+    background: linear-gradient(135deg, #f6ffed, #f9f0ff);
+    border-color: #52c41a;
+}
+
+.draggable-card[data-card-size="normal"] {
+    grid-column: auto !important;
+    background: white;
+}
+
+/* 全宽卡片特殊样式 */
+.draggable-card[data-card-size="full"] .card-icon {
+    font-size: 32px;
+}
+
+.draggable-card[data-card-size="full"] .card-name {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.draggable-card[data-card-size="full"] .card-type {
+    font-size: 12px;
+    padding: 4px 8px;
+}
+
+/* 卡片内容 */
+.draggable-card > div:not(.drag-handle) {
+    text-align: center;
+}
+
+.draggable-card .card-icon {
+    font-size: 24px;
+    margin-bottom: 8px;
+}
+
+.draggable-card .card-name {
+    font-size: 12px;
+    font-weight: 500;
+    margin-bottom: 4px;
+    color: #333;
+}
+
+.draggable-card .card-type {
+    font-size: 10px;
+    color: #999;
+    background: #f5f5f5;
+    padding: 2px 6px;
+    border-radius: 3px;
+    display: inline-block;
+}
+
+/* 布局操作按钮 */
+.layout-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 15px 20px;
+    background: white;
+    border-top: 1px solid #e8e8e8;
+}
+
+.layout-actions .btn-small {
+    padding: 6px 12px;
+    font-size: 12px;
+    border: 1px solid #d9d9d9;
+    border-radius: 4px;
+    cursor: pointer;
+    background: white;
+    transition: all 0.2s;
+}
+
+.layout-actions .btn-small:hover {
+    background: #f5f5f5;
+    border-color: #1890ff;
+    color: #1890ff;
+}
+
+.layout-actions .btn-small:active {
+    background: #e6f7ff;
+}
+
+/* 拖拽放置区域指示器 */
+.drop-zone {
+    border: 2px dashed #52c41a;
+    background: #f6ffed;
+    min-height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #52c41a;
+    font-size: 14px;
+    margin: 10px 0;
+    border-radius: 6px;
+}
+
+.drop-zone.drag-over {
+    border-color: #1890ff;
+    background: #f0f8ff;
+    color: #1890ff;
+}
+
+/* 放置位置指示器 */
+.drop-indicator {
+    position: fixed;
+    background: #1890ff;
+    z-index: 999;
+    pointer-events: none;
+    border-radius: 2px;
+    animation: pulse 0.5s ease-in-out infinite alternate;
+}
+
+.drop-indicator.left,
+.drop-indicator.right {
+    width: 4px;
+    height: 100%;
+}
+
+.drop-indicator.top,
+.drop-indicator.bottom {
+    width: 100%;
+    height: 4px;
+}
+
+.drop-indicator.left {
+    left: 0;
+    background: linear-gradient(90deg, #1890ff, #52c41a);
+}
+
+.drop-indicator.right {
+    right: 0;
+    background: linear-gradient(90deg, #52c41a, #1890ff);
+}
+
+.drop-indicator.top {
+    top: 0;
+    background: linear-gradient(180deg, #1890ff, #52c41a);
+}
+
+.drop-indicator.bottom {
+    bottom: 0;
+    background: linear-gradient(180deg, #52c41a, #1890ff);
+}
+
+@keyframes pulse {
+    from { opacity: 0.6; }
+    to { opacity: 1; }
+}
+
+/* 拖拽方向提示 */
+.drag-direction-hint {
+    position: absolute;
+    background: rgba(24, 144, 255, 0.9);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    z-index: 1001;
+    pointer-events: none;
+    white-space: nowrap;
+}
+
+/* 网格布局辅助线 */
+.grid-guide {
+    position: absolute;
+    border: 1px dashed #e8e8e8;
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* 拖拽时的网格高亮 */
+.drag-grid.dragging {
+    background: #f0f8ff;
+    border: 1px dashed #1890ff;
+}
+
+.drag-grid.dragging .draggable-card:not(.dragging) {
+    background: #f5f5f5;
+    border-color: #d9d9d9;
+}
+
+/* 拖拽方向指示器 */
+.drag-direction {
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    pointer-events: none;
+    z-index: 1000;
+}
+
+.drag-direction.left {
+    border-width: 8px 12px 8px 0;
+    border-color: transparent #1890ff transparent transparent;
+    left: -10px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.drag-direction.right {
+    border-width: 8px 0 8px 12px;
+    border-color: transparent transparent transparent #1890ff;
+    right: -10px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.drag-direction.top {
+    border-width: 0 8px 12px 8px;
+    border-color: transparent transparent #1890ff transparent;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.drag-direction.bottom {
+    border-width: 12px 8px 0 8px;
+    border-color: #1890ff transparent transparent transparent;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .drag-grid {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 10px;
+        padding: 15px;
+    }
+    
+    .draggable-card {
+        padding: 10px;
+    }
+    
+    .layout-actions {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .layout-actions .btn-small {
+        width: 100%;
+        text-align: center;
+    }
+}
+
+/* 动画效果 */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.draggable-card {
+    animation: fadeIn 0.3s ease;
+}
+
+/* 布局预览模式 */
+.layout-preview-mode .draggable-card {
+    cursor: default;
+}
+
+.layout-preview-mode .draggable-card:hover {
+    transform: none;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.layout-preview-mode .drag-handle {
+    display: none;
+}
+
+/* 空状态 */
+.drag-grid:empty::before {
+    content: "请选择数据卡片开始拖拽布局";
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #999;
+    font-style: italic;
+    height: 100px;
+}
+
+/* 网格布局调整 */
+.drag-grid.grid-1 {
+    grid-template-columns: 1fr;
+}
+
+.drag-grid.grid-2 {
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.drag-grid.grid-3 {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.drag-grid.grid-4 {
+    grid-template-columns: repeat(4, 1fr);
+}
+
+/* 列布局调整 */
+.drag-grid.column-layout {
+    grid-template-columns: 1fr;
+    gap: 10px;
+}
+
+/* 行布局调整 */
+.drag-grid.row-layout {
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 10px;
+    overflow-x: auto;
+}
+
+/* 自定义布局提示 */
+.layout-help {
+    background: #e6f7ff;
+    border: 1px solid #91d5ff;
+    border-radius: 4px;
+    padding: 10px 15px;
+    margin: 10px 0;
+    font-size: 12px;
+    color: #0050b3;
+}
+
+.layout-help .help-icon {
+    margin-right: 8px;
+}

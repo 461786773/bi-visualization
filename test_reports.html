@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>测试报表功能</title>
+    <link rel="stylesheet" href="styles/main.css">
+</head>
+<body>
+    <div style="padding: 20px;">
+        <h1>报表功能测试</h1>
+        
+        <div style="margin-bottom: 20px;">
+            <button onclick="testLoadReports()">测试加载报表</button>
+            <button onclick="testCreateSample()">创建示例数据</button>
+        </div>
+        
+        <div id="testResults" style="border: 1px solid #ccc; padding: 20px; min-height: 200px;">
+            <p>测试结果将显示在这里...</p>
+        </div>
+        
+        <div id="reportCards" class="cards-grid" style="margin-top: 20px;">
+            <!-- 报表卡片将在这里显示 -->
+        </div>
+    </div>
+
+    <script src="js/dataConfig.js"></script>
+    <script>
+        function testLoadReports() {
+            // 使用dataConfig.js统一管理数据
+            const reports = window.DataConfig?.reports || [];
+            const dataCards = window.DataConfig?.dataCards || [];
+            
+            const results = document.getElementById('testResults');
+            results.innerHTML = `
+                <h3>数据配置检查结果：</h3>
+                <p><strong>数据来源：</strong>dataConfig.js统一管理</p>
+                <p><strong>报表数量：</strong>${reports.length}</p>
+                <p><strong>数据卡片数量：</strong>${dataCards.length}</p>
+                <p><strong>报表数据：</strong></p>
+                <pre>${JSON.stringify(reports, null, 2)}</pre>
+                <p><strong>数据卡片数据：</strong></p>
+                <pre>${JSON.stringify(dataCards, null, 2)}</pre>
+            `;
+            
+            // 尝试渲染报表卡片
+            renderReportCards(reports, dataCards);
+        }
+        
+        function renderReportCards(reports, dataCards) {
+            const container = document.getElementById('reportCards');
+            
+            if (reports.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #999;">暂无报表</p>';
+                return;
+            }
+            
+            container.innerHTML = reports.map((report, index) => {
+                const cardCount = report.dataCardIds ? report.dataCardIds.length : 0;
+                const iconMap = {
+                    'dashboard': '📊',
+                    'summary': '📈',
+                    'detail': '📋',
+                    'comparison': '⚖️'
+                };
+                
+                const getTemplateName = (type) => {
+                    const nameMap = {
+                        'dashboard': '仪表盘',
+                        'summary': '汇总报表',
+                        'detail': '明细报表',
+                        'comparison': '对比报表'
+                    };
+                    return nameMap[type] || type;
+                };
+                
+                return `
+                    <div class="card">
+                        <div class="card-title">
+                            <span style="font-size: 20px;">${iconMap[report.type]}</span>
+                            <span>${report.name}</span>
+                        </div>
+                        <div class="card-content">
+                            <p><strong>类型：</strong>${getTemplateName(report.type)}</p>
+                            <p><strong>包含卡片：</strong>${cardCount}个</p>
+                            <p><strong>创建时间：</strong>${new Date(report.createdAt).toLocaleDateString()}</p>
+                            <p><strong>描述：</strong>${report.description || '无描述'}</p>
+                        </div>
+                        <div class="card-actions">
+                            <button class="btn btn-primary" onclick="alert('预览报表: ${report.name}')">📊 预览</button>
+                            <button class="btn btn-secondary" onclick="alert('编辑报表: ${report.name}')">✏️ 编辑</button>
+                            <button class="btn btn-danger" onclick="alert('删除报表: ${report.name}')">🗑️ 删除</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        function testCreateSample() {
+            // 数据已通过dataConfig.js统一管理，无需创建示例数据
+            alert('数据已通过dataConfig.js统一管理，无需单独创建示例数据！');
+            testLoadReports();
+        }
+        
+
+        
+        // 页面加载时自动测试
+        window.onload = function() {
+            testLoadReports();
+        };
+    </script>
+</body>
+</html>

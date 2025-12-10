@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数据源管理 - BI可视化工具</title>
+    <link rel="stylesheet" href="styles/main.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- 侧边栏 -->
+        <aside class="sidebar">
+            <div class="logo">
+                <div class="logo-icon">BI</div>
+                <div class="logo-text">数据智能分析</div>
+            </div>
+            
+            <nav class="nav-menu">
+                <div class="nav-item active">
+                    <a href="datasource.html" class="nav-link">
+                        <div class="nav-icon">🗄️</div>
+                        <div class="nav-text">数据源管理</div>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="metrics.html" class="nav-link">
+                        <div class="nav-icon">🎯</div>
+                        <div class="nav-text">指标定义</div>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="dimensions.html" class="nav-link">
+                        <div class="nav-icon">📏</div>
+                        <div class="nav-text">维度配置</div>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="datacards.html" class="nav-link">
+                        <div class="nav-icon">📊</div>
+                        <div class="nav-text">数据卡片</div>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="reports.html" class="nav-link">
+                        <div class="nav-icon">📋</div>
+                        <div class="nav-text">报表配置</div>
+                    </a>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- 主内容区域 -->
+        <main class="main-content">
+            <header class="header">
+                <div class="page-title">🗄️ 数据源管理</div>
+                <div class="header-actions">
+                    <button class="header-btn" onclick="showCreateDataSourceModal()">
+                        <span>➕</span>
+                        <span>创建数据源</span>
+                    </button>
+                </div>
+            </header>
+
+            <div class="content">
+                <!-- 数据源列表 -->
+                <div class="table-container">
+                    <div class="table-header">
+                        <div class="table-title">数据源列表</div>
+                        <div class="table-actions">
+                            <input type="text" id="searchDataSource" placeholder="搜索数据源..." oninput="filterDataSources()">
+                        </div>
+                    </div>
+                    <table class="data-table" id="dataSourceTable">
+                        <thead>
+                            <tr>
+                                <th>名称</th>
+                                <th>类型</th>
+                                <th>状态</th>
+                                <th>连接信息</th>
+                                <th>创建时间</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="dataSourceList">
+                            <!-- 数据源列表将通过JavaScript动态生成 -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- 数据源详情卡片 -->
+                <div class="cards-grid" id="dataSourceCards" style="display: none;">
+                    <!-- 数据源卡片将通过JavaScript动态生成 -->
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- 创建/编辑数据源模态框 -->
+    <div class="modal" id="dataSourceModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="dataSourceModalTitle">创建数据源</h2>
+                <button class="modal-close" id="closeDataSourceModalBtn">×</button>
+            </div>
+            <div id="dataSourceModalContent">
+                <div class="form-group">
+                    <label>数据源名称</label>
+                    <input type="text" id="dataSourceName" placeholder="请输入数据源名称">
+                </div>
+                <div class="form-group">
+                    <label>数据源类型</label>
+                    <select id="dataSourceType" onchange="toggleDataSourceFields()">
+                        <option value="mysql">MySQL数据库</option>
+                        <option value="postgresql">PostgreSQL数据库</option>
+                        <option value="api">API接口</option>
+                        <option value="file">文件上传</option>
+                        <option value="bigquery">Google BigQuery</option>
+                        <option value="snowflake">Snowflake</option>
+                    </select>
+                </div>
+                
+                <!-- MySQL/PostgreSQL配置 -->
+                <div id="databaseConfig" class="data-source-config">
+                    <div class="form-group">
+                        <label>主机地址</label>
+                        <input type="text" id="dbHost" placeholder="localhost">
+                    </div>
+                    <div class="form-group">
+                        <label>端口</label>
+                        <input type="number" id="dbPort" placeholder="3306">
+                    </div>
+                    <div class="form-group">
+                        <label>数据库名</label>
+                        <input type="text" id="dbName" placeholder="database_name">
+                    </div>
+                    <div class="form-group">
+                        <label>用户名</label>
+                        <input type="text" id="dbUsername" placeholder="username">
+                    </div>
+                    <div class="form-group">
+                        <label>密码</label>
+                        <input type="password" id="dbPassword" placeholder="password">
+                    </div>
+                </div>
+
+                <!-- API配置 -->
+                <div id="apiConfig" class="data-source-config" style="display: none;">
+                    <div class="form-group">
+                        <label>API端点</label>
+                        <input type="url" id="apiEndpoint" placeholder="https://api.example.com/data">
+                    </div>
+                    <div class="form-group">
+                        <label>认证方式</label>
+                        <select id="apiAuthType">
+                            <option value="none">无需认证</option>
+                            <option value="bearer">Bearer Token</option>
+                            <option value="basic">Basic Auth</option>
+                            <option value="oauth2">OAuth 2.0</option>
+                        </select>
+                    </div>
+                    <div class="form-group" id="apiTokenGroup" style="display: none;">
+                        <label>Token</label>
+                        <input type="password" id="apiToken" placeholder="Bearer Token">
+                    </div>
+                </div>
+
+                <!-- 文件配置 -->
+                <div id="fileConfig" class="data-source-config" style="display: none;">
+                    <div class="form-group">
+                        <label>文件类型</label>
+                        <select id="fileType">
+                            <option value="csv">CSV文件</option>
+                            <option value="excel">Excel文件</option>
+                            <option value="json">JSON文件</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>上传文件</label>
+                        <input type="file" id="fileUpload" accept=".csv,.xlsx,.json">
+                    </div>
+                </div>
+
+                <!-- 连接测试 -->
+                <div class="form-group">
+                    <button class="btn btn-secondary" onclick="testDataSourceConnection()">测试连接</button>
+                    <span id="connectionStatus" style="margin-left: 10px;"></span>
+                </div>
+
+                <div class="form-actions">
+                    <button class="btn btn-secondary" id="cancelDataSourceBtn">取消</button>
+                    <button class="btn btn-primary" onclick="saveDataSource()">保存数据源</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 数据源详情模态框 -->
+    <div class="modal" id="dataSourceDetailModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="dataSourceDetailTitle">数据源详情</h2>
+                <button class="modal-close" id="closeDataSourceDetailModalBtn">×</button>
+            </div>
+            <div id="dataSourceDetailContent">
+                <!-- 详情内容将通过JavaScript动态生成 -->
+            </div>
+        </div>
+    </div>
+
+    <script src="js/dataConfig.js"></script>
+    <script src="js/datasource.js"></script>
+</body>
+</html>

@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数据卡片 - BI可视化工具</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/dimension-cards.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- 侧边栏 -->
+        <aside class="sidebar">
+            <div class="logo">
+                <div class="logo-icon">BI</div>
+                <div class="logo-text">数据智能分析</div>
+            </div>
+            
+            <nav class="nav-menu">
+                <div class="nav-item">
+                    <a href="datasource.html" class="nav-link">
+                        <div class="nav-icon">🗄️</div>
+                        <div class="nav-text">数据源管理</div>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="metrics.html" class="nav-link">
+                        <div class="nav-icon">🎯</div>
+                        <div class="nav-text">指标定义</div>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="dimensions.html" class="nav-link">
+                        <div class="nav-icon">📏</div>
+                        <div class="nav-text">维度配置</div>
+                    </a>
+                </div>
+                <div class="nav-item active">
+                    <a href="datacards.html" class="nav-link">
+                        <div class="nav-icon">📊</div>
+                        <div class="nav-text">数据卡片</div>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="reports.html" class="nav-link">
+                        <div class="nav-icon">📋</div>
+                        <div class="nav-text">报表配置</div>
+                    </a>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- 主内容区域 -->
+        <main class="main-content">
+            <header class="header">
+                <div class="page-title">📊 数据卡片</div>
+                <div class="header-actions">
+                    <button class="header-btn" onclick="showCreateDataCardModal()">
+                        <span>➕</span>
+                        <span>创建数据卡片</span>
+                    </button>
+                </div>
+            </header>
+
+            <div class="content">
+                <!-- 数据卡片模板库 -->
+                <div class="template-library">
+                    <h3>数据卡片模板</h3>
+                    <div class="template-cards" id="templateCards">
+                        <div class="template-card" onclick="selectTemplate('kpi')">
+                            <div class="template-icon">📈</div>
+                            <div class="template-title">KPI指标卡</div>
+                            <div class="template-desc">显示关键绩效指标的数值卡片</div>
+                        </div>
+                        <div class="template-card" onclick="selectTemplate('line')">
+                            <div class="template-icon">📉</div>
+                            <div class="template-title">折线图</div>
+                            <div class="template-desc">显示趋势变化的折线图表</div>
+                        </div>
+                        <div class="template-card" onclick="selectTemplate('bar')">
+                            <div class="template-icon">📊</div>
+                            <div class="template-title">柱状图</div>
+                            <div class="template-desc">比较不同类别的数据</div>
+                        </div>
+                        <div class="template-card" onclick="selectTemplate('pie')">
+                            <div class="template-icon">🥧</div>
+                            <div class="template-title">饼图</div>
+                            <div class="template-desc">显示占比关系的饼图</div>
+                        </div>
+                        <div class="template-card" onclick="selectTemplate('table')">
+                            <div class="template-icon">📋</div>
+                            <div class="template-title">数据表格</div>
+                            <div class="template-desc">详细的数据表格展示</div>
+                        </div>
+                        <div class="template-card" onclick="selectTemplate('map')">
+                            <div class="template-icon">🗺️</div>
+                            <div class="template-title">地图</div>
+                            <div class="template-desc">地理分布数据可视化</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 我的数据卡片 -->
+                <div class="my-data-cards">
+                    <h3>我的数据卡片</h3>
+                    <div class="cards-grid" id="myDataCards">
+                        <!-- 数据卡片将通过JavaScript动态生成 -->
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- 创建数据卡片模态框 -->
+    <div class="modal" id="dataCardModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="dataCardModalTitle">创建数据卡片</h2>
+                <button class="modal-close" id="closeDataCardModalBtn">×</button>
+            </div>
+            <div id="dataCardModalContent">
+                <div class="form-group">
+                    <label>卡片名称</label>
+                    <input type="text" id="dataCardName" placeholder="请输入卡片名称">
+                </div>
+                <div class="form-group">
+                    <label>卡片类型</label>
+                    <select id="dataCardType" onchange="toggleDataCardConfig()">
+                        <option value="kpi">📈 KPI指标卡 - 单个关键指标展示</option>
+                        <option value="line">📉 折线图 - 时间趋势分析</option>
+                        <option value="bar">📊 柱状图 - 分类对比分析</option>
+                        <option value="pie">🥧 饼图 - 占比关系分析</option>
+                        <option value="table">📋 数据表格 - 详细数据展示</option>
+                        <option value="map">🗺️ 地图 - 地理分布分析</option>
+                    </select>
+                    <div class="help-text">
+                        <small>💡 根据分析目标选择合适的图表类型：趋势分析用折线图，对比分析用柱状图，占比分析用饼图，地理分布用地图</small>
+                    </div>
+                </div>
+                
+                <!-- 指标选择 -->
+                <div id="singleMetricConfig" class="form-group">
+                    <label>选择指标</label>
+                    <select id="dataCardMetric" onchange="loadMetricDimensions()">
+                        <option value="">请选择指标</option>
+                    </select>
+                </div>
+                
+                <!-- 维度选择 -->
+                <div class="form-group">
+                    <label>选择维度</label>
+                    <select id="dataCardDimension">
+                        <option value="">请选择维度</option>
+                    </select>
+                    <div id="dimensionCompatibilityInfo" style="margin-top: 5px; font-size: 0.9em; display: none;"></div>
+                </div>
+                
+                <!-- KPI配置 -->
+                <div id="kpiConfig" class="data-card-config">
+                    <div class="form-group">
+                        <label>数值格式</label>
+                        <select id="kpiFormat">
+                            <option value="number">数字</option>
+                            <option value="currency">货币</option>
+                            <option value="percentage">百分比</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>比较周期</label>
+                        <select id="kpiComparison">
+                            <option value="none">无比较</option>
+                            <option value="previous_period">上一周期</option>
+                            <option value="year_over_year">同比</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- 图表配置 -->
+                <div id="chartConfig" class="data-card-config" style="display: none;">
+                    <div class="form-group">
+                        <label>图表标题</label>
+                        <input type="text" id="chartTitle" placeholder="图表标题">
+                    </div>
+                    <div class="form-group">
+                        <label>X轴标签</label>
+                        <input type="text" id="xAxisLabel" placeholder="X轴标签">
+                    </div>
+                    <div class="form-group">
+                        <label>Y轴标签</label>
+                        <input type="text" id="yAxisLabel" placeholder="Y轴标签">
+                    </div>
+                    <div class="form-group">
+                        <label>颜色方案</label>
+                        <select id="chartColorScheme">
+                            <option value="default">默认</option>
+                            <option value="blue">蓝色系</option>
+                            <option value="green">绿色系</option>
+                            <option value="red">红色系</option>
+                            <option value="purple">紫色系</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- 表格配置 -->
+                <div id="tableConfig" class="data-card-config" style="display: none;">
+                    <div class="form-group">
+                        <label>选择指标（可多选）</label>
+                        <select id="tableMetrics" multiple size="4" style="height: auto;">
+                            <option value="">请选择指标（按住Ctrl可多选）</option>
+                        </select>
+                        <div class="help-text">
+                            <small>💡 表格支持同时展示多个相关指标，建议选择2-5个指标以获得最佳展示效果</small>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>显示列数</label>
+                        <input type="number" id="tableColumns" min="1" max="20" value="5">
+                    </div>
+                    <div class="form-group">
+                        <label>分页大小</label>
+                        <input type="number" id="tablePageSize" min="5" max="100" value="10">
+                    </div>
+                    <div class="form-group">
+                        <label>维度使用方式</label>
+                        <select id="tableDimensionUsage">
+                            <option value="grouping">按维度分组（推荐）</option>
+                            <option value="filtering">仅作为筛选条件</option>
+                            <option value="none">不使用维度</option>
+                        </select>
+                        <div class="help-text">
+                            <small>💡 表格可以按维度分组展示数据，也可以不使用维度直接显示明细数据</small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 地图配置 -->
+                <div id="mapConfig" class="data-card-config" style="display: none;">
+                    <div class="form-group">
+                        <label>地图类型</label>
+                        <select id="mapType">
+                            <option value="china">中国地图</option>
+                            <option value="world">世界地图</option>
+                            <option value="province">省份地图</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>地理维度</label>
+                        <select id="mapDimension">
+                            <option value="">请选择地理维度</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>卡片描述</label>
+                    <textarea id="dataCardDescription" placeholder="请输入卡片描述" rows="2"></textarea>
+                </div>
+                
+                <div class="form-actions">
+                    <button class="btn btn-secondary" id="cancelDataCardBtn">取消</button>
+                    <button class="btn btn-primary" onclick="saveDataCard()">保存数据卡片</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 数据卡片预览模态框 -->
+    <div class="modal" id="dataCardPreviewModal">
+        <div class="modal-content" style="max-width: 90%; max-height: 90%;">
+            <div class="modal-header">
+                <h2 id="dataCardPreviewTitle">数据卡片预览</h2>
+                <button class="modal-close" id="closeDataCardPreviewModalBtn">×</button>
+            </div>
+            <div id="dataCardPreviewContent">
+                <!-- 预览内容将通过JavaScript动态生成 -->
+            </div>
+        </div>
+    </div>
+
+    <script src="js/dataConfig.js"></script>
+    <script src="js/datacards.js"></script>
+</body>
+</html>

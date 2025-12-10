@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>维度配置 - BI可视化工具</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/dimension-cards.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- 侧边栏 -->
+        <aside class="sidebar">
+            <div class="logo">
+                <div class="logo-icon">BI</div>
+                <div class="logo-text">数据智能分析</div>
+            </div>
+            
+            <nav class="nav-menu">
+                <div class="nav-item">
+                    <a href="datasource.html" class="nav-link">
+                        <div class="nav-icon">🗄️</div>
+                        <div class="nav-text">数据源管理</div>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="metrics.html" class="nav-link">
+                        <div class="nav-icon">🎯</div>
+                        <div class="nav-text">指标定义</div>
+                    </a>
+                </div>
+                <div class="nav-item active">
+                    <a href="dimensions.html" class="nav-link">
+                        <div class="nav-icon">📏</div>
+                        <div class="nav-text">维度配置</div>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="datacards.html" class="nav-link">
+                        <div class="nav-icon">📊</div>
+                        <div class="nav-text">数据卡片</div>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="reports.html" class="nav-link">
+                        <div class="nav-icon">📋</div>
+                        <div class="nav-text">报表配置</div>
+                    </a>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- 主内容区域 -->
+        <main class="main-content">
+            <header class="header">
+                <div class="page-title">📏 维度配置</div>
+                <div class="header-actions">
+                    <button class="header-btn" onclick="showCreateDimensionModal()">
+                        <span>➕</span>
+                        <span>创建维度</span>
+                    </button>
+                </div>
+            </header>
+
+            <div class="content">
+                <!-- 维度分组 -->
+                <div class="dimension-groups">
+                    <div class="dimension-group">
+                        <h3>时间维度</h3>
+                        <div class="dimension-cards" id="timeDimensions">
+                            <!-- 时间维度将通过JavaScript动态生成 -->
+                        </div>
+                    </div>
+                    <div class="dimension-group">
+                        <h3>业务维度</h3>
+                        <div class="dimension-cards" id="businessDimensions">
+                            <!-- 业务维度将通过JavaScript动态生成 -->
+                        </div>
+                    </div>
+                    <div class="dimension-group">
+                        <h3>地理维度</h3>
+                        <div class="dimension-cards" id="geoDimensions">
+                            <!-- 地理维度将通过JavaScript动态生成 -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 维度列表 -->
+                <div class="table-container">
+                    <div class="table-header">
+                        <div class="table-title">维度列表</div>
+                        <div class="table-actions">
+                            <input type="text" id="searchDimension" placeholder="搜索维度..." oninput="filterDimensions()">
+                            <select id="filterDimensionType" onchange="filterDimensions()">
+                                <option value="">所有类型</option>
+                                <option value="time">时间维度</option>
+                                <option value="business">业务维度</option>
+                                <option value="geography">地理维度</option>
+                                <option value="other">其他维度</option>
+                            </select>
+                        </div>
+                    </div>
+                    <table class="data-table" id="dimensionListTable">
+                        <thead>
+                            <tr>
+                                <th>维度名称</th>
+                                <th>显示名称</th>
+                                <th>类型</th>
+                                <th>数据源</th>
+                                <th>字段</th>
+                                <th>层级</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="dimensionList">
+                            <!-- 维度列表将通过JavaScript动态生成 -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- 创建/编辑维度模态框 -->
+    <div class="modal" id="dimensionModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="dimensionModalTitle">创建维度</h2>
+                <button class="modal-close" id="closeDimensionModalBtn">×</button>
+            </div>
+            <div id="dimensionModalContent">
+                <div class="form-group">
+                    <label>维度名称</label>
+                    <input type="text" id="dimensionName" placeholder="请输入维度名称">
+                </div>
+                <div class="form-group">
+                    <label>显示名称</label>
+                    <input type="text" id="dimensionDisplayName" placeholder="请输入显示名称">
+                </div>
+                <div class="form-group">
+                    <label>维度类型</label>
+                    <select id="dimensionType" onchange="toggleDimensionFields()">
+                        <option value="time">📅 时间维度 - 用于时间序列分析（趋势图、时序分析）</option>
+                        <option value="business">📊 业务维度 - 用于分类统计（饼图、柱状图、分类分析）</option>
+                        <option value="geography">🗺️ 地理维度 - 用于地图可视化（区域分布、地理分析）</option>
+                        <option value="other">🔧 其他维度 - 通用维度类型</option>
+                    </select>
+                    <div class="help-text">
+                        <small>💡 根据您的分析需求选择合适的维度类型：时间维度用于趋势分析，业务维度用于分类统计，地理维度用于地图展示</small>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>数据源</label>
+                    <select id="dimensionDataSource" onchange="loadDimensionTables()">
+                        <option value="">请选择数据源</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>数据表</label>
+                    <select id="dimensionTable">
+                        <option value="">请选择数据表</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>维度字段</label>
+                    <select id="dimensionField">
+                        <option value="">请选择数据表后加载字段</option>
+                    </select>
+                </div>
+                
+                <!-- 时间维度配置 -->
+                <div id="timeDimensionConfig" class="dimension-config">
+                    <div class="form-group">
+                        <label>时间格式</label>
+                        <select id="timeFormat">
+                            <option value="date">日期 (YYYY-MM-DD)</option>
+                            <option value="datetime">日期时间 (YYYY-MM-DD HH:MM:SS)</option>
+                            <option value="year">年份 (YYYY)</option>
+                            <option value="month">月份 (YYYY-MM)</option>
+                            <option value="quarter">季度 (YYYY-Q)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>时间粒度</label>
+                        <select id="timeGranularity">
+                            <option value="day">天</option>
+                            <option value="week">周</option>
+                            <option value="month">月</option>
+                            <option value="quarter">季度</option>
+                            <option value="year">年</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- 地理维度配置 -->
+                <div id="geoDimensionConfig" class="dimension-config" style="display: none;">
+                    <div class="form-group">
+                        <label>地理层级</label>
+                        <select id="geoLevel">
+                            <option value="country">国家</option>
+                            <option value="province">省份</option>
+                            <option value="city">城市</option>
+                            <option value="district">区县</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- 层级维度配置 -->
+                <div id="hierarchyConfig" class="dimension-config">
+                    <div class="form-group">
+                        <label>是否层级维度</label>
+                        <div>
+                            <label style="margin-right: 20px;">
+                                <input type="radio" name="hierarchyType" value="flat" checked> 平级维度
+                            </label>
+                            <label>
+                                <input type="radio" name="hierarchyType" value="hierarchy"> 层级维度
+                            </label>
+                        </div>
+                    </div>
+                    <div id="hierarchyFields" style="display: none;">
+                        <div class="form-group">
+                            <label>层级字段（从高到低）</label>
+                            <input type="text" id="hierarchyFieldsInput" placeholder="例如: country,province,city">
+                            <div class="formula-help">
+                                <small>多个层级字段用逗号分隔，从高到低排列</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>维度描述</label>
+                    <textarea id="dimensionDescription" placeholder="请输入维度描述" rows="2"></textarea>
+                </div>
+                
+                <div class="form-actions">
+                    <button class="btn btn-secondary" id="cancelDimensionBtn">取消</button>
+                    <button class="btn btn-primary" onclick="saveDimension()">保存维度</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 维度预览模态框 -->
+    <div class="modal" id="dimensionPreviewModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="dimensionPreviewTitle">维度预览</h2>
+                <button class="modal-close" id="closeDimensionPreviewModalBtn">×</button>
+            </div>
+            <div id="dimensionPreviewContent">
+                <!-- 预览内容将通过JavaScript动态生成 -->
+            </div>
+        </div>
+    </div>
+
+    <script src="js/dataConfig.js"></script>
+    <script src="js/dimensions.js"></script>
+</body>
+</html>

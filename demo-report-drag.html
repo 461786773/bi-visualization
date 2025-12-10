@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>报表拖拽功能演示 - BI可视化工具</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/drag-layout.css">
+    <style>
+        .demo-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .demo-header {
+            text-align: center;
+            margin-bottom: 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 20px;
+            border-radius: 12px;
+        }
+        .demo-header h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+        .demo-header p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+        .demo-section {
+            background: white;
+            border-radius: 8px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .demo-section h2 {
+            color: #333;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #1890ff;
+            padding-bottom: 10px;
+        }
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .feature-card {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #1890ff;
+        }
+        .feature-card h3 {
+            color: #1890ff;
+            margin-bottom: 10px;
+        }
+        .step-by-step {
+            margin-top: 20px;
+        }
+        .step {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 6px;
+        }
+        .step-number {
+            background: #1890ff;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+        .step-content {
+            flex: 1;
+        }
+        .live-demo {
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        .demo-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .btn-demo {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        .btn-primary {
+            background: #1890ff;
+            color: white;
+        }
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #666;
+        }
+        .btn-demo:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <div class="demo-header">
+            <h1>📋 报表拖拽功能演示</h1>
+            <p>灵活拖动报表中的卡片，实现个性化布局配置</p>
+        </div>
+
+        <div class="demo-section">
+            <h2>🎯 功能特性</h2>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h3>🔄 上下左右拖拽</h3>
+                    <p>支持二维拖拽操作，可以自由调整数据卡片在报表中的任意位置。</p>
+                </div>
+                <div class="feature-card">
+                    <h3>📐 智能网格布局</h3>
+                    <p>自动调整网格系统，支持灵活的二维定位和智能排列。</p>
+                </div>
+                <div class="feature-card">
+                    <h3>🎯 视觉指示器</h3>
+                    <p>拖拽时显示方向指示器，清晰展示放置位置和方向。</p>
+                </div>
+                <div class="feature-card">
+                    <h3>💾 布局保存</h3>
+                    <p>自定义的布局可以保存到报表配置中，下次编辑时自动加载。</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <h2>📝 使用说明</h2>
+            <div class="step-by-step">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h3>创建报表</h3>
+                        <p>点击"创建报表"按钮，选择"自定义布局"模板</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h3>选择数据卡片</h3>
+                        <p>勾选需要添加到报表中的数据卡片</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h3>拖拽布局</h3>
+                        <p>使用鼠标拖动卡片右上角的拖拽手柄（⋮⋮），支持上下左右四个方向的拖拽定位</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <div class="step-content">
+                        <h3>保存布局</h3>
+                        <p>点击"保存布局"按钮，将自定义的布局保存到报表配置中</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <h2>🎮 实时演示</h2>
+            <div class="live-demo">
+                <p>下面是一个简单的拖拽布局演示：</p>
+                
+                <div class="drag-layout-container">
+                    <div class="layout-help">
+                        <span class="help-icon">💡</span>
+                        <strong>使用提示：</strong>拖拽卡片右上角手柄可调整位置，点击卡片右下角按钮可调整大小
+                    </div>
+                    <div class="drag-grid" id="demoGrid">
+                        <div class="draggable-card" draggable="true" data-card-id="1" data-card-size="normal">
+                            <div class="drag-handle">⋮⋮</div>
+                            <div style="font-size: 24px;">📈</div>
+                            <div style="font-size: 12px; margin-top: 5px;">销售总额</div>
+                            <div style="font-size: 10px; color: #999;">KPI指标卡</div>
+                            <div class="card-actions">
+                                <button class="btn-tiny" onclick="demoSetCardSize(this.parentElement.parentElement, 'full')" title="全宽">▣</button>
+                                <button class="btn-tiny" onclick="demoSetCardSize(this.parentElement.parentElement, 'half')" title="半宽">▦</button>
+                                <button class="btn-tiny" onclick="demoSetCardSize(this.parentElement.parentElement, 'normal')" title="正常">□</button>
+                            </div>
+                        </div>
+                        <div class="draggable-card" draggable="true" data-card-id="2" data-card-size="normal">
+                            <div class="drag-handle">⋮⋮</div>
+                            <div style="font-size: 24px;">📉</div>
+                            <div style="font-size: 12px; margin-top: 5px;">月度趋势</div>
+                            <div style="font-size: 10px; color: #999;">折线图</div>
+                            <div class="card-actions">
+                                <button class="btn-tiny" onclick="demoSetCardSize(this.parentElement.parentElement, 'full')" title="全宽">▣</button>
+                                <button class="btn-tiny" onclick="demoSetCardSize(this.parentElement.parentElement, 'half')" title="半宽">▦</button>
+                                <button class="btn-tiny" onclick="demoSetCardSize(this.parentElement.parentElement, 'normal')" title="正常">□</button>
+                            </div>
+                        </div>
+                        <div class="draggable-card" draggable="true" data-card-id="3" data-card-size="normal">
+                            <div class="drag-handle">⋮⋮</div>
+                            <div style="font-size: 24px;">📊</div>
+                            <div style="font-size: 12px; margin-top: 5px;">产品对比</div>
+                            <div style="font-size: 10px; color: #999;">柱状图</div>
+                            <div class="card-actions">
+                                <button class="btn-tiny" onclick="demoSetCardSize(this.parentElement.parentElement, 'full')" title="全宽">▣</button>
+                                <button class="btn-tiny" onclick="demoSetCardSize(this.parentElement.parentElement, 'half')" title="半宽">▦</button>
+                                <button class="btn-tiny" onclick="demoSetCardSize(this.parentElement.parentElement, 'normal')" title="正常">□</button>
+                            </div>
+                        </div>
+                        <div class="draggable-card" draggable="true" data-card-id="4" data-card-size="normal">
+                            <div class="drag-handle">⋮⋮</div>
+                            <div style="font-size: 24px;">🥧</div>
+                            <div style="font-size: 12px; margin-top: 5px;">市场占比</div>
+                            <div style="font-size: 10px; color: #999;">饼图</div>
+                            <div class="card-actions">
+                                <button class="btn-tiny" onclick="demoSetCardSize(this.parentElement.parentElement, 'full')" title="全宽">▣</button>
+                                <button class="btn-tiny" onclick="demoSetCardSize(this.parentElement.parentElement, 'half')" title="半宽">▦</button>
+                                <button class="btn-tiny" onclick="demoSetCardSize(this.parentElement.parentElement, 'normal')" title="正常">□</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layout-actions">
+                        <button class="btn-small" onclick="demoResetLayout()">重置布局</button>
+                        <button class="btn-small" onclick="demoAutoArrangeLayout()">自动排列</button>
+                        <button class="btn-small" onclick="demoSaveLayout()">保存布局</button>
+                    </div>
+                </div>
+                
+                <div class="demo-actions">
+                    <button class="btn-demo btn-primary" onclick="window.location.href='reports.html'">
+                        🚀 开始使用报表配置
+                    </button>
+                    <button class="btn-demo btn-secondary" onclick="window.location.href='datacards.html'">
+                        📊 先创建数据卡片
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <h2>💡 使用场景</h2>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h3>📈 销售仪表盘</h3>
+                    <p>将重要的KPI指标放在显眼位置，趋势图表按重要程度排列</p>
+                </div>
+                <div class="feature-card">
+                    <h3>🛡️ 安全监控</h3>
+                    <p>根据监控优先级调整卡片布局，关键指标优先展示</p>
+                </div>
+                <div class="feature-card">
+                    <h3>📊 数据分析</h3>
+                    <p>按照分析流程组织卡片顺序，提高分析效率</p>
+                </div>
+                <div class="feature-card">
+                    <h3>📋 报告展示</h3>
+                    <p>根据汇报重点调整布局，突出关键信息</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 演示页面的拖拽功能（支持上下左右拖拽）
+        function initDemoDragAndDrop() {
+            const draggableCards = document.querySelectorAll('#demoGrid .draggable-card');
+            const dragGrid = document.getElementById('demoGrid');
+            
+            let draggedCard = null;
+            let dragOffsetX = 0;
+            let dragOffsetY = 0;
+            
+            // 初始化网格布局
+            initDemoGridLayout(dragGrid, draggableCards.length);
+            
+            draggableCards.forEach(card => {
+                // 开始拖拽
+                card.addEventListener('dragstart', (e) => {
+                    draggedCard = card;
+                    e.dataTransfer.effectAllowed = 'move';
+                    e.dataTransfer.setData('text/html', card.innerHTML);
+                    
+                    // 计算拖拽偏移量
+                    const rect = card.getBoundingClientRect();
+                    dragOffsetX = e.clientX - rect.left;
+                    dragOffsetY = e.clientY - rect.top;
+                    
+                    setTimeout(() => {
+                        card.style.opacity = '0.4';
+                        card.style.position = 'fixed';
+                        card.style.zIndex = '1000';
+                        card.style.pointerEvents = 'none';
+                    }, 0);
+                });
+                
+                // 拖拽中
+                document.addEventListener('dragover', (e) => {
+                    if (!draggedCard) return;
+                    
+                    // 更新拖拽卡片位置
+                    draggedCard.style.left = (e.clientX - dragOffsetX) + 'px';
+                    draggedCard.style.top = (e.clientY - dragOffsetY) + 'px';
+                    
+                    // 显示放置位置指示器
+                    showDemoDropIndicator(e, draggedCard, dragGrid);
+                });
+                
+                // 拖拽结束
+                card.addEventListener('dragend', (e) => {
+                    if (draggedCard) {
+                        draggedCard.style.opacity = '1';
+                        draggedCard.style.position = '';
+                        draggedCard.style.zIndex = '';
+                        draggedCard.style.pointerEvents = '';
+                        draggedCard.style.left = '';
+                        draggedCard.style.top = '';
+                        
+                        // 移除所有拖拽指示器
+                        removeDemoDropIndicators(dragGrid);
+                    }
+                    
+                    draggableCards.forEach(c => c.classList.remove('drag-over'));
+                    draggedCard = null;
+                });
+                
+                // 拖拽经过
+                card.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    e.dataTransfer.dropEffect = 'move';
+                });
+                
+                // 拖拽进入
+                card.addEventListener('dragenter', (e) => {
+                    e.preventDefault();
+                    if (card !== draggedCard) {
+                        card.classList.add('drag-over');
+                    }
+                });
+                
+                // 拖拽离开
+                card.addEventListener('dragleave', (e) => {
+                    card.classList.remove('drag-over');
+                });
+                
+                // 放置
+                card.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    card.classList.remove('drag-over');
+                    
+                    if (card !== draggedCard) {
+                        // 获取目标位置
+                        const targetRect = card.getBoundingClientRect();
+                        
+                        // 判断放置方向（上下左右）
+                        const dropDirection = getDemoDropDirection(e.clientX, e.clientY, targetRect);
+                        
+                        // 根据方向执行不同的放置逻辑
+                        handleDemoDrop(draggedCard, card, dragGrid, dropDirection);
+                    }
+                    
+                    // 移除所有拖拽指示器
+                    removeDemoDropIndicators(dragGrid);
+                });
+            });
+        }
+        
+        // 初始化演示网格布局
+        function initDemoGridLayout(grid, cardCount) {
+            // 根据卡片数量自动调整网格布局
+            const columns = Math.ceil(Math.sqrt(cardCount));
+            grid.style.gridTemplateColumns = `repeat(${columns}, 1fr)`;
+            
+            // 为每个卡片设置初始网格位置
+            const cards = Array.from(grid.children);
+            cards.forEach((card, index) => {
+                const row = Math.floor(index / columns) + 1;
+                const col = (index % columns) + 1;
+                card.style.gridColumn = col;
+                card.style.gridRow = row;
+            });
+        }
+        
+        // 显示演示放置位置指示器
+        function showDemoDropIndicator(e, draggedCard, grid) {
+            // 移除现有指示器
+            removeDemoDropIndicators(grid);
+            
+            const elements = document.elementsFromPoint(e.clientX, e.clientY);
+            const targetCard = elements.find(el => el.classList.contains('draggable-card') && el !== draggedCard);
+            
+            if (targetCard) {
+                const rect = targetCard.getBoundingClientRect();
+                const dropDirection = getDemoDropDirection(e.clientX, e.clientY, rect);
+                
+                // 创建放置指示器
+                const indicator = document.createElement('div');
+                indicator.className = 'drop-indicator ' + dropDirection;
+                
+                // 根据方向设置指示器位置
+                switch(dropDirection) {
+                    case 'left':
+                        indicator.style.left = rect.left + 'px';
+                        indicator.style.top = rect.top + 'px';
+                        indicator.style.width = '4px';
+                        indicator.style.height = rect.height + 'px';
+                        break;
+                    case 'right':
+                        indicator.style.left = (rect.left + rect.width) + 'px';
+                        indicator.style.top = rect.top + 'px';
+                        indicator.style.width = '4px';
+                        indicator.style.height = rect.height + 'px';
+                        break;
+                    case 'top':
+                        indicator.style.left = rect.left + 'px';
+                        indicator.style.top = rect.top + 'px';
+                        indicator.style.width = rect.width + 'px';
+                        indicator.style.height = '4px';
+                        break;
+                    case 'bottom':
+                        indicator.style.left = rect.left + 'px';
+                        indicator.style.top = (rect.top + rect.height) + 'px';
+                        indicator.style.width = rect.width + 'px';
+                        indicator.style.height = '4px';
+                        break;
+                }
+                
+                document.body.appendChild(indicator);
+            }
+        }
+        
+        // 移除演示所有放置指示器
+        function removeDemoDropIndicators(grid) {
+            const indicators = document.querySelectorAll('.drop-indicator');
+            indicators.forEach(indicator => indicator.remove());
+        }
+        
+        // 获取演示放置方向
+        function getDemoDropDirection(x, y, targetRect) {
+            const centerX = targetRect.left + targetRect.width / 2;
+            const centerY = targetRect.top + targetRect.height / 2;
+            
+            const horizontalDistance = Math.abs(x - centerX);
+            const verticalDistance = Math.abs(y - centerY);
+            
+            // 判断是水平放置还是垂直放置
+            if (horizontalDistance / targetRect.width > verticalDistance / targetRect.height) {
+                // 水平放置
+                return x < centerX ? 'left' : 'right';
+            } else {
+                // 垂直放置
+                return y < centerY ? 'top' : 'bottom';
+            }
+        }
+        
+        // 处理演示放置操作
+        function handleDemoDrop(draggedCard, targetCard, grid, direction) {
+            const allCards = Array.from(grid.children);
+            const draggedIndex = allCards.indexOf(draggedCard);
+            const targetIndex = allCards.indexOf(targetCard);
+            
+            switch(direction) {
+                case 'left':
+                    // 插入到目标左侧
+                    grid.insertBefore(draggedCard, targetCard);
+                    break;
+                case 'right':
+                    // 插入到目标右侧
+                    if (targetIndex < allCards.length - 1) {
+                        grid.insertBefore(draggedCard, targetCard.nextSibling);
+                    } else {
+                        grid.appendChild(draggedCard);
+                    }
+                    break;
+                case 'top':
+                    // 插入到目标上方
+                    grid.insertBefore(draggedCard, targetCard);
+                    break;
+                case 'bottom':
+                    // 插入到目标下方
+                    if (targetIndex < allCards.length - 1) {
+                        grid.insertBefore(draggedCard, targetCard.nextSibling);
+                    } else {
+                        grid.appendChild(draggedCard);
+                    }
+                    break;
+            }
+            
+            // 更新网格布局
+            updateDemoGridLayout(grid);
+        }
+        
+        // 更新演示网格布局
+        function updateDemoGridLayout(grid) {
+            const cards = Array.from(grid.children);
+            const columns = parseInt(getComputedStyle(grid).gridTemplateColumns.split(' ').length);
+            
+            cards.forEach((card, index) => {
+                const row = Math.floor(index / columns) + 1;
+                const col = (index % columns) + 1;
+                card.style.gridColumn = col;
+                card.style.gridRow = row;
+            });
+        }
+        
+        // 演示设置卡片大小
+        function demoSetCardSize(card, size) {
+            card.setAttribute('data-card-size', size);
+            
+            // 根据大小设置样式
+            const grid = document.getElementById('demoGrid');
+            if (!grid) return;
+            
+            switch(size) {
+                case 'full':
+                    card.style.gridColumn = '1 / -1'; // 横向填满
+                    card.style.gridRow = 'auto';
+                    break;
+                case 'half':
+                    card.style.gridColumn = 'span 2'; // 占用2列
+                    card.style.gridRow = 'auto';
+                    break;
+                case 'normal':
+                    card.style.gridColumn = 'auto';
+                    card.style.gridRow = 'auto';
+                    break;
+            }
+            
+            // 重新排列其他卡片
+            demoAutoArrangeLayout();
+        }
+        
+        // 演示自动排列布局
+        function demoAutoArrangeLayout() {
+            const grid = document.getElementById('demoGrid');
+            if (!grid) return;
+            
+            const cards = Array.from(grid.children);
+            if (cards.length === 0) return;
+            
+            // 重置所有卡片位置
+            cards.forEach(card => {
+                card.style.gridColumn = 'auto';
+                card.style.gridRow = 'auto';
+            });
+            
+            // 智能排列算法
+            demoSmartArrangeCards(cards, grid);
+        }
+        
+        // 演示智能排列卡片
+        function demoSmartArrangeCards(cards, grid) {
+            const maxColumns = 4; // 最大列数
+            let currentRow = 1;
+            let currentCol = 1;
+            
+            cards.forEach(card => {
+                const size = card.getAttribute('data-card-size') || 'normal';
+                let span = 1;
+                
+                // 根据卡片大小确定跨度
+                switch(size) {
+                    case 'full':
+                        span = maxColumns;
+                        break;
+                    case 'half':
+                        span = 2;
+                        break;
+                    case 'normal':
+                        span = 1;
+                        break;
+                }
+                
+                // 检查当前行是否有足够空间
+                if (currentCol + span - 1 > maxColumns) {
+                    // 换行
+                    currentRow++;
+                    currentCol = 1;
+                }
+                
+                // 设置卡片位置
+                card.style.gridColumn = `${currentCol} / span ${span}`;
+                card.style.gridRow = currentRow;
+                
+                // 更新列位置
+                currentCol += span;
+                
+                // 如果当前行已满，换行
+                if (currentCol > maxColumns) {
+                    currentRow++;
+                    currentCol = 1;
+                }
+            });
+            
+            // 更新网格模板
+            grid.style.gridTemplateColumns = `repeat(${maxColumns}, 1fr)`;
+        }
+        
+        // 重置布局
+        function demoResetLayout() {
+            const dragGrid = document.getElementById('demoGrid');
+            const cards = Array.from(dragGrid.children);
+            
+            // 重置所有卡片大小和位置
+            cards.forEach(card => {
+                card.setAttribute('data-card-size', 'normal');
+                card.style.gridColumn = 'auto';
+                card.style.gridRow = 'auto';
+            });
+            
+            // 按原始ID排序
+            cards.sort((a, b) => {
+                const aId = parseInt(a.getAttribute('data-card-id'));
+                const bId = parseInt(b.getAttribute('data-card-id'));
+                return aId - bId;
+            });
+            
+            // 清空并重新添加
+            cards.forEach(card => dragGrid.appendChild(card));
+            
+            // 重新初始化网格布局
+            const columns = Math.ceil(Math.sqrt(cards.length));
+            dragGrid.style.gridTemplateColumns = `repeat(${columns}, 1fr)`;
+            
+            cards.forEach((card, index) => {
+                const row = Math.floor(index / columns) + 1;
+                const col = (index % columns) + 1;
+                card.style.gridColumn = col;
+                card.style.gridRow = row;
+            });
+            
+            alert('布局已重置！');
+        }
+        
+        // 保存布局
+        function demoSaveLayout() {
+            const dragGrid = document.getElementById('demoGrid');
+            const cards = Array.from(dragGrid.children);
+            const cardOrder = cards.map(card => parseInt(card.getAttribute('data-card-id')));
+            
+            alert(`布局已保存！当前顺序：${cardOrder.join(', ')}`);
+        }
+        
+        // 页面加载时初始化拖拽
+        document.addEventListener('DOMContentLoaded', initDemoDragAndDrop);
+    </script>
+</body>
+</html>

@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>指标定义 - BI可视化工具</title>
+    <link rel="stylesheet" href="styles/main.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- 侧边栏 -->
+        <aside class="sidebar">
+            <div class="logo">
+                <div class="logo-icon">BI</div>
+                <div class="logo-text">数据智能分析</div>
+            </div>
+            
+            <nav class="nav-menu">
+                <div class="nav-item">
+                    <a href="datasource.html" class="nav-link">
+                        <div class="nav-icon">🗄️</div>
+                        <div class="nav-text">数据源管理</div>
+                    </a>
+                </div>
+                <div class="nav-item active">
+                    <a href="metrics.html" class="nav-link">
+                        <div class="nav-icon">🎯</div>
+                        <div class="nav-text">指标定义</div>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="dimensions.html" class="nav-link">
+                        <div class="nav-icon">📏</div>
+                        <div class="nav-text">维度配置</div>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="datacards.html" class="nav-link">
+                        <div class="nav-icon">📊</div>
+                        <div class="nav-text">数据卡片</div>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="reports.html" class="nav-link">
+                        <div class="nav-icon">📋</div>
+                        <div class="nav-text">报表配置</div>
+                    </a>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- 主内容区域 -->
+        <main class="main-content">
+            <header class="header">
+                <div class="page-title">🎯 指标定义</div>
+                <div class="header-actions">
+                    <button class="header-btn" onclick="showCreateMetricModal()">
+                        <span>➕</span>
+                        <span>创建指标</span>
+                    </button>
+                </div>
+            </header>
+
+            <div class="content">
+                <!-- 指标列表 -->
+                <div class="metrics-table-container">
+                    <div class="metrics-table-header">
+                        <div class="table-title">指标列表</div>
+                        <div class="table-actions">
+                            <input type="text" id="searchMetric" placeholder="搜索指标..." oninput="filterMetrics()">
+                            <select id="filterDataSource" onchange="filterMetrics()">
+                                <option value="">所有数据源</option>
+                            </select>
+                        </div>
+                    </div>
+                    <table class="metrics-table" id="metricsTable">
+                        <thead>
+                            <tr>
+                                <th>指标名称</th>
+                                <th>显示名称</th>
+                                <th>数据源</th>
+                                <th>计算方式</th>
+                                <th>公式</th>
+                                <th>创建时间</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="metricList">
+                            <!-- 指标列表将通过JavaScript动态生成 -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- 指标卡片视图 -->
+                <div id="metricCards" style="margin-top: 20px;">
+                    <!-- 指标卡片将通过JavaScript动态生成 -->
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- 创建/编辑指标模态框 -->
+    <div class="modal" id="metricModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="metricModalTitle">创建指标</h2>
+                <button class="modal-close" id="closeMetricModalBtn">×</button>
+            </div>
+            <div id="metricModalContent">
+                <div class="form-group">
+                    <label>指标名称</label>
+                    <input type="text" id="metricName" placeholder="请输入指标名称">
+                </div>
+                <div class="form-group">
+                    <label>显示名称</label>
+                    <input type="text" id="metricDisplayName" placeholder="请输入显示名称">
+                </div>
+                <div class="form-group">
+                    <label>数据源</label>
+                    <select id="metricDataSource">
+                        <option value="">请选择数据源</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>数据表</label>
+                    <select id="metricTable">
+                        <option value="">请选择数据表</option>
+                    </select>
+                </div>
+                
+                <!-- 字段选择区域 -->
+                <div class="form-group">
+                    <label>选择计算字段</label>
+                    <div class="field-selection-container">
+                        <div id="availableFields" class="available-fields">
+                            <!-- 可用字段将通过JavaScript动态加载 -->
+                            <div class="no-fields">请先选择数据表以加载字段</div>
+                        </div>
+                        <div class="field-selection-actions">
+                            <button type="button" class="btn-small" onclick="addSelectedFields()">
+                                ➡️ 添加选中字段
+                            </button>
+                        </div>
+                        <div id="selectedFields" class="selected-fields">
+                            <!-- 已选字段将通过JavaScript动态显示 -->
+                            <div class="no-fields">暂无选中字段</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>计算方式</label>
+                    <div class="calculation-options">
+                        <label style="display: block; margin-bottom: 10px;">
+                            <input type="radio" name="calculationType" value="basic" checked onchange="toggleCalculationType()">
+                            基础计算方式
+                        </label>
+                        <label style="display: block;">
+                            <input type="radio" name="calculationType" value="custom" onchange="toggleCalculationType()">
+                            自定义计算方式
+                        </label>
+                    </div>
+                </div>
+                
+                <div id="basicCalculation" class="calculation-section">
+                    <div class="form-group">
+                        <label>基础计算</label>
+                        <select id="basicCalculationType" onchange="updateFormulaPreview()">
+                            <option value="sum">求和 (SUM)</option>
+                            <option value="count">计数 (COUNT)</option>
+                            <option value="avg">平均值 (AVG)</option>
+                            <option value="max">最大值 (MAX)</option>
+                            <option value="min">最小值 (MIN)</option>
+                            <option value="distinct">去重计数 (DISTINCT COUNT)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>计算字段</label>
+                        <div id="calculationFieldsContainer">
+                            <!-- 计算字段将通过JavaScript动态生成 -->
+                            <div class="no-fields">请先选择字段</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="customCalculation" class="calculation-section" style="display: none;">
+                    <div class="form-group">
+                        <label>自定义公式</label>
+                        <textarea id="customFormula" placeholder="例如: SUM(total_amount) / COUNT(DISTINCT user_id)" rows="3" oninput="updateFormulaPreview()"></textarea>
+                        <div class="formula-help">
+                            <small>支持SQL函数: SUM(), COUNT(), AVG(), MAX(), MIN(), DISTINCT等</small>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>公式预览</label>
+                    <div id="formulaPreview" style="background: #f5f5f5; padding: 8px 12px; border-radius: 4px; font-family: monospace;">
+                        SUM()
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>指标描述</label>
+                    <textarea id="metricDescription" placeholder="请输入指标描述" rows="2"></textarea>
+                </div>
+                
+                <div class="form-actions">
+                    <button class="btn btn-secondary" id="cancelMetricBtn">取消</button>
+                    <button class="btn btn-primary" onclick="saveMetric()">保存指标</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 快速创建模板 -->
+    <div class="modal" id="quickCreateModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>快速创建指标</h2>
+                <button class="modal-close" id="closeQuickCreateModalBtn">×</button>
+            </div>
+            <div class="quick-templates">
+                <div class="template-item" onclick="quickCreateRevenue()">
+                    <div class="template-icon">💰</div>
+                    <div class="template-info">
+                        <div class="template-title">收入指标</div>
+                        <div class="template-desc">创建销售额、订单金额等收入相关指标</div>
+                    </div>
+                </div>
+                <div class="template-item" onclick="quickCreateUser()">
+                    <div class="template-icon">👥</div>
+                    <div class="template-info">
+                        <div class="template-title">用户指标</div>
+                        <div class="template-desc">创建用户数、活跃用户等用户相关指标</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/dataConfig.js"></script>
+    <script src="js/metrics.js"></script>
+</body>
+</html>
